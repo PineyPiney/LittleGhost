@@ -1,0 +1,91 @@
+Blake : "Hey..."
+
+Choice : "Who are you?" / "Who am I?"
+
+Who Are You? {
+    Blake : "The name's Blake. I just like to come out here for a smoke sometimes"
+
+    Blake : "It's noisy in Cindergate - it's nice to get some peace. I found this place when I really needed it. \n It's usually empty"
+
+    Beat : 2
+
+    Blake : "Guess they're dropping in newbies here now"
+
+    Beat : 1
+
+    Blake : "Hope I don't need to find a new place"
+
+    Beat : 2
+
+    Little Ghost : "Is this Heaven?"
+}
+
+Who am I? {
+    Blake : "Wow kid, you don't even know your own name?"
+
+    Beat : 2
+
+    Blake : "I guess it is that bad for people"
+
+    Beat : 1
+
+    Blake : "But if you don't know - I really have no idea"
+}
+
+Blake : "But you're in Haven kid, it's the only afterlife to exist"
+
+Blake : "Some do call it heaven"
+
+Blake : "I'd say it was more of a nice purgatory, and you're not supposed to stay here for very long"
+
+Blake : "Some do though, you know how people are"
+
+Beat : 2
+
+Blake : "Some people are terrified of change - the abyss"
+
+Blake : "But there's really no rule to when you have to move on, so they can exist as long as they need to"
+
+Beat : 2
+
+Blake : "If you want to stay here for a few lifetimes, you can. Or maybe someone you know is here - do you remember anything?"
+
+Beat : 3
+
+Little Ghost : "I like the color orange, and dinosaurs are pretty cool"
+
+Beat : 1
+
+Blake : "Anything else? You got a family, kid? "
+
+Beat : 2
+
+Blake : "Do you remember how you died?"
+
+Beat : 1
+
+Little Ghost : "No. I don’t"
+
+Little Ghost : "I’m sorry, I really don’t think I remember much of anything"
+
+Beat : 2
+
+Blake : "Then you must be hella disoriented kid, if you’re lucky someone in your family might be waiting for you"
+
+Beat : 1
+
+Blake : "But not always. No one ever stayed for me."
+
+Beat : 2
+
+Blake : "That’s the thing about dying young, you sort of beat your parents to it"
+
+Blake : "So there’s no one here, sometimes grandparents or friends stay but,"
+
+Beat : 3
+
+Blake : "Nobody's here for me"
+
+Beat : 2
+
+Little Ghost : "I'm sorry"

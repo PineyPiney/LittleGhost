@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<PGL version="1.0">
+  <level>
+    <name>EXAMPLE</name>
+    <width>60.0</width>
+    <colour>0.36 0.86 1.0</colour>
+    <icon>broke</icon>
+    <creation-date>21:16 27-01-2022</creation-date>
+    <edit-date>21:42 17-04-2022</edit-date>
+  </level>
+  <layers>
+    <layer id="1">
+      <item name="Tree2">
+        <source id="Tree2-translations">
+          <float_array count="4" id="Tree2-translations-array">-1.1666666 -1.2037036 20.666666 -0.87037027</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree2-translations-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Tree2-rotations">
+          <float_array count="2" id="Tree2-rotations-array">-0.18849558 -0.1256637</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree2-rotations-array" stride="1">
+              <param name="ROTATION" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Tree2-scales">
+          <float_array count="4" id="Tree2-scales-array">5.559919 5.559919 8.140278 8.140278</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree2-scales-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <sampler id="Tree2-sampler">
+          <input semantic="TRANSLATION" source="#Tree2-translations"/>
+          <input semantic="ROTATION" source="#Tree2-rotations"/>
+          <input semantic="SCALE" source="#Tree2-scales"/>
+        </sampler>
+      </item>
+      <item name="Tree1">
+        <source id="Tree1-translations">
+          <float_array count="4" id="Tree1-translations-array">-21.759258 -1.6111109 8.851851 -0.8333334</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree1-translations-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Tree1-rotations">
+          <float_array count="2" id="Tree1-rotations-array">-0.12566343 2.8312206E-7</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree1-rotations-array" stride="1">
+              <param name="ROTATION" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Tree1-scales">
+          <float_array count="4" id="Tree1-scales-array">6.760258 6.760258 7.2154193 7.2154193</float_array>
+          <technique_common>
+            <accessor count="2" source="#Tree1-scales-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <sampler id="Tree1-sampler">
+          <input semantic="TRANSLATION" source="#Tree1-translations"/>
+          <input semantic="ROTATION" source="#Tree1-rotations"/>
+          <input semantic="SCALE" source="#Tree1-scales"/>
+        </sampler>
+      </item>
+    </layer>
+    <layer id="-1">
+      <item name="Bush1">
+        <source id="Bush1-translations">
+          <float_array count="10" id="Bush1-translations-array">-11.981482 -2.425926 -5.2407403 -2.2962964 -25.018518 -3.0925922 5.833332 -2.7777777 16.999998 -3.3148148</float_array>
+          <technique_common>
+            <accessor count="5" source="#Bush1-translations-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Bush1-rotations">
+          <float_array count="5" id="Bush1-rotations-array">-0.50265485 0.25132743 0.125664 -0.18849555 0.12566397</float_array>
+          <technique_common>
+            <accessor count="5" source="#Bush1-rotations-array" stride="1">
+              <param name="ROTATION" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Bush1-scales">
+          <float_array count="10" id="Bush1-scales-array">2.5937428 2.5937428 2.5937428 2.5937428 1.7801865 1.7801865 2.5937428 2.5937428 3.014762 3.014762</float_array>
+          <technique_common>
+            <accessor count="5" source="#Bush1-scales-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <sampler id="Bush1-sampler">
+          <input semantic="TRANSLATION" source="#Bush1-translations"/>
+          <input semantic="ROTATION" source="#Bush1-rotations"/>
+          <input semantic="SCALE" source="#Bush1-scales"/>
+        </sampler>
+      </item>
+      <item name="Bush2">
+        <source id="Bush2-translations">
+          <float_array count="12" id="Bush2-translations-array">-17.018518 -2.574074 -28.074074 -2.5185184 2.9444444 -1.8333333 -7.87037 -1.9814816 12.444444 -3.1111107 24.907406 -3.074074</float_array>
+          <technique_common>
+            <accessor count="6" source="#Bush2-translations-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Bush2-rotations">
+          <float_array count="6" id="Bush2-rotations-array">-0.1256637 0.18849558 0.25132743 -0.1256637 -0.12566346 0.18849558</float_array>
+          <technique_common>
+            <accessor count="6" source="#Bush2-rotations-array" stride="1">
+              <param name="ROTATION" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Bush2-scales">
+          <float_array count="12" id="Bush2-scales-array">1.8719299 1.8719299 1.8719299 1.8719299 2.0799222 2.0799222 2.0799222 2.0799222 3.014762 3.014762 1.8719299 1.8719299</float_array>
+          <technique_common>
+            <accessor count="6" source="#Bush2-scales-array" stride="2">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <sampler id="Bush2-sampler">
+          <input semantic="TRANSLATION" source="#Bush2-translations"/>
+          <input semantic="ROTATION" source="#Bush2-rotations"/>
+          <input semantic="SCALE" source="#Bush2-scales"/>
+        </sampler>
+      </item>
+    </layer>
+  </layers>
+</PGL>

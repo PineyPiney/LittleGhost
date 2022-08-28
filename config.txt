@@ -1,0 +1,4 @@
+Resolution:window
+Master Volume:2.0
+Music Volume:0.041666664
+SFX Volume:1.0

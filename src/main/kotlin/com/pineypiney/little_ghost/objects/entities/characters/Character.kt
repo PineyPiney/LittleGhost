@@ -23,7 +23,8 @@ import glm_.vec2.Vec2
 import org.lwjgl.glfw.GLFW.glfwGetTime
 import kotlin.math.abs
 
-abstract class Character(var scene: LittleGameScene, override val id: ResourceKey, width: Float = 1f): AnimatedObject2D(id), Interactable {
+abstract class Character(var scene: LittleGameScene, override val id: ResourceKey, width: Float = 1f): AnimatedObject2D(
+    defaultShader), Interactable {
 
     override val children: MutableSet<Interactable> = mutableSetOf()
     override val importance: Int = 0
@@ -70,7 +71,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
     abstract var sprintingFrames: List<Texture>
 
-    override var currentFrame: Texture = Texture.brokeTexture
+    override var currentFrame: Texture = Texture.broke
     override val animationLength: Float = 1.1f
     override var animationOffset: Float = glfwGetTime().f
 

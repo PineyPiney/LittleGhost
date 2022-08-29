@@ -11,9 +11,9 @@ import com.pineypiney.little_ghost.util.UserSettings
 import glm_.vec2.Vec2i
 import mu.KotlinLogging
 
-class LittleEngine: GameEngine<LittleLogic>(LittleWindow.INSTANCE, FileResourcesLoader("src/main/resources")) {
+class LittleEngine: GameEngine<LittleLogic>(FileResourcesLoader("src/main/resources")) {
 
-    //override val window: LittleWindow = LittleWindow.INSTANCE
+    override val window: LittleWindow = LittleWindow.INSTANCE
     override var TARGET_FPS: Int = 1000
     override val TARGET_UPS: Int = 20
 
@@ -25,7 +25,7 @@ class LittleEngine: GameEngine<LittleLogic>(LittleWindow.INSTANCE, FileResources
     override fun init() {
         UserSettings.loadOptions()
         super.init()
-        (window as LittleWindow).setCursor(TextureLoader.getTexture(ResourceKey("cursor")), Vec2i(8, 0))
+        window.setCursor(TextureLoader.getTexture(ResourceKey("cursor")), Vec2i(8, 0))
     }
 
     fun setGame(game: LittleLogic, delete: Boolean = true){

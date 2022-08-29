@@ -2,6 +2,8 @@ package com.pineypiney.little_ghost
 
 import com.pineypiney.little_ghost.screens.MenuScreen
 
+// This is needed to initialise the Window, which in turn initialises OpenGL
+var window = LittleWindow.INSTANCE
 var gameEngine = LittleEngine()
 
 fun main(vararg args: String) {

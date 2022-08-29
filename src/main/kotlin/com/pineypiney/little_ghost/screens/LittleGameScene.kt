@@ -29,7 +29,7 @@ import glm_.pow
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL46C
+import org.lwjgl.opengl.GL11.glClearColor
 import kotlin.math.abs
 
 class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : LittleLogic(gameEngine) {
@@ -79,7 +79,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
 
         this.width = details.width
         val colour = details.colour
-        GL46C.glClearColor(colour.r, colour.g, colour.b, 1f)
+        glClearColor(colour.r, colour.g, colour.b, 1f)
     }
 
     override fun init() {

@@ -4,7 +4,7 @@ import com.pineypiney.game_engine.Window
 import com.pineypiney.game_engine.rendering.FrameBuffer
 import com.pineypiney.little_ghost.screens.MenuScreen
 import com.pineypiney.little_ghost.util.UserSettings
-import org.lwjgl.opengl.GL46C.glViewport
+import org.lwjgl.opengl.GL11.glViewport
 
 open class MenuRenderer: PixelRenderer<MenuScreen>() {
 

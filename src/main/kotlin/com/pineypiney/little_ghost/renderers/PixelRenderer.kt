@@ -10,7 +10,7 @@ import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.LittleLogic
 import com.pineypiney.little_ghost.LittleWindow
 import glm_.vec2.Vec2i
-import org.lwjgl.opengl.GL46C.*
+import org.lwjgl.opengl.GL11.*
 
 abstract class PixelRenderer<E: LittleLogic>: BufferedGameRenderer<E>() {
 

@@ -12,5 +12,5 @@ void main(){
     float ct = texture.r + texture.g + texture.b;
     if(ct < 0.05) discard;
 
-    FragColour = vec4(vec3(colour), ct / 3);
+    FragColour = vec4(vec3(colour), ct / 3 * colour.w);
 }

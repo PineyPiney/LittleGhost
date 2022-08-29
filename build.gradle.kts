@@ -12,11 +12,28 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "com.pineypiney.pixel_game"
+group = "com.pineypiney.little_ghost"
 version = "indev"
 
 val lwjglVersion = "3.3.1"
-val lwjglNatives = "natives-windows"
+
+// Use https://www.lwjgl.org/customize to set natives
+val lwjglNatives = Pair(
+    System.getProperty("os.name")!!,
+    System.getProperty("os.arch")!!
+).let { (name, arch) ->
+    when {
+        arrayOf("Mac OS X", "Darwin").any { name.startsWith(it) } -> {
+            "natives-macos${if (arch.startsWith("aarch64")) "-arm64" else ""}"
+        }
+
+        arrayOf("Windows").any { name.startsWith(it) } -> {
+            "natives-windows"
+        }
+
+        else -> throw Error("Unrecognized or unsupported platform. Please set \"lwjglNatives\" manually")
+    }
+}
 
 val javacv = "1.5.7"
 
@@ -33,7 +50,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
     // Game Engine
-    implementation("com.github.PineyPiney:GameEngine:e991f92d4d")
+    implementation("com.github.PineyPiney:GameEngine:50153d1b76")
 
     // GLM
     implementation("com.github.kotlin-graphics.glm:glm:375708cf1c0942b0df9d624acddb1c9993f6d92d")
@@ -66,7 +83,7 @@ dependencies {
 
 tasks.jar{
     manifest{
-        attributes["Main-Class"] = "com.pineypiney.pixel_game.PixelGameKt"
+        attributes["Main-Class"] = "com.pineypiney.little_ghost.LittleGameKt"
     }
 }
 
@@ -81,12 +98,12 @@ tasks.register<Zip>("packageResources"){
 // Create full game file
 tasks.register<Zip>("packageGame"){
     from(layout.projectDirectory.dir("\\build\\libs\\"))
-    include("\\PixelGame-indev-all.jar")
+    include("\\LittleGhost-indev-all.jar")
     from(layout.projectDirectory.dir("\\"))
     include("\\resources.zip")
 
     archiveFileName.set("PixelGame.zip")
-    destinationDirectory.set(layout.projectDirectory.dir("\\out\\artifacts\\PixelGame_main_jar"))
+    destinationDirectory.set(layout.projectDirectory.dir("\\out\\artifacts\\LittleGhost_main_jar"))
 }
 
 tasks.test {

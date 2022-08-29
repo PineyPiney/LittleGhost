@@ -1,5 +1,5 @@
 // GEOMETRY SHADER INFORMATION
-#version 460 core
+#version 400 core
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 

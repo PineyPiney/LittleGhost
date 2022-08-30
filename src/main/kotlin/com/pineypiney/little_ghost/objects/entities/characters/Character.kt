@@ -5,6 +5,7 @@ import com.pineypiney.game_engine.objects.Interactable
 import com.pineypiney.game_engine.objects.game_objects.objects_2D.AnimatedObject2D
 import com.pineypiney.game_engine.objects.util.collision.HardCollisionBox
 import com.pineypiney.game_engine.objects.util.collision.SoftCollisionBox
+import com.pineypiney.game_engine.objects.util.shapes.Shape
 import com.pineypiney.game_engine.resources.audio.AudioLoader
 import com.pineypiney.game_engine.resources.shaders.Shader
 import com.pineypiney.game_engine.resources.textures.Texture
@@ -19,6 +20,7 @@ import com.pineypiney.little_ghost.screens.MovementMechanics
 import glm_.detail.Random
 import glm_.f
 import glm_.i
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import org.lwjgl.glfw.GLFW.glfwGetTime
 import kotlin.math.abs
@@ -80,7 +82,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
     override var shader: Shader
         get() = super.shader
-        set(value) {}
+        set(_) {}
 
     private var lastJumpTime: Double = 0.0
     private val grounded: Boolean; get(){
@@ -122,6 +124,14 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
         return currentFrame
     }
 
+    override fun render(view: Mat4, projection: Mat4, tickDelta: Double) {
+        super.render(view, projection, tickDelta)
+
+        Shape.centerSquareShape2D.apply {
+            bind()
+            draw()
+        }
+    }
 
     override fun update(interval: Float, time: Double) {
 

@@ -34,7 +34,7 @@ class MainMenuScreen(gameEngine: LittleEngine) : MenuScreen("clouds2", gameEngin
     }
 
     private val exitButton = TextButton("Close", Vec2(-0.4, -0.9), Vec2(0.8, 0.3), window){
-        window.setShouldClose()
+        window.shouldClose = true
     }
 
     private var backgroundDirection = 1

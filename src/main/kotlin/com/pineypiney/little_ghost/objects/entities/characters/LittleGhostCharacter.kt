@@ -5,11 +5,11 @@ import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.screens.LittleGameScene
 
-open class LittleGhostCharacter(scene: LittleGameScene, width: Float): Character(scene, ResourceKey("little_ghost"), width) {
+class LittleGhostCharacter(scene: LittleGameScene, width: Float): Character(scene, ResourceKey("little_ghost"), width) {
 
     override var stillFrames: List<Texture> = listOf(TextureLoader[ResourceKey("characters/ben/ghost/talking/bentalking1")])
     override var movingFrames: List<Texture> = (1..7).map { TextureLoader[ResourceKey("characters/ben/ghost/walking/benwalking$it")] }
-    override var sprintingFrames: List<Texture> = stillFrames
+    override var sprintingFrames: List<Texture> = movingFrames
 
     override fun copy(): LittleGhostCharacter {
         return LittleGhostCharacter(scene, scale.x)

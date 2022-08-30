@@ -4,7 +4,6 @@ import com.pineypiney.game_engine.Window
 import com.pineypiney.game_engine.rendering.FrameBuffer
 import com.pineypiney.little_ghost.screens.MenuScreen
 import com.pineypiney.little_ghost.util.UserSettings
-import org.lwjgl.opengl.GL11.glViewport
 
 open class MenuRenderer: PixelRenderer<MenuScreen>() {
 
@@ -21,9 +20,8 @@ open class MenuRenderer: PixelRenderer<MenuScreen>() {
         // And draw the HUD
         renderGUI(game)
 
-
         // Then clear the main screen
-        glViewport(0, 0, window.width, window.height)
+        viewport(window.frameSize)
         FrameBuffer.unbind()
         clear()
         // And render the whole screen onto a screen quad

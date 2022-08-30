@@ -46,7 +46,7 @@ open class PixelSceneRenderer: PixelRenderer<LittleLogic>() {
 
 
         // Finally, clear the main screen
-        viewport(window.size)
+        viewport(window.frameSize)
         FrameBuffer.unbind()
         clear()
         // And render the whole screen onto a screen quad

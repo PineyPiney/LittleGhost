@@ -11,6 +11,9 @@ import com.pineypiney.game_engine.util.input.Inputs
 import com.pineypiney.little_ghost.LittleEngine
 import com.pineypiney.little_ghost.LittleLogic
 import com.pineypiney.little_ghost.objects.GameObjects
+import com.pineypiney.little_ghost.objects.decorative.Background
+import com.pineypiney.little_ghost.objects.decorative.FireFly
+import com.pineypiney.little_ghost.objects.decorative.Lamppost
 import com.pineypiney.little_ghost.objects.entities.characters.InteractableCharacter
 import com.pineypiney.little_ghost.objects.entities.characters.LittleGhostCharacter
 import com.pineypiney.little_ghost.objects.util.BarrierObject
@@ -37,9 +40,9 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     override val renderer: PixelSceneRenderer = PixelSceneRenderer()
 
     // Properties of the level
-    val width: Float
+    var width: Float
     val height: Float = 10f
-    val hh get() = height / 2
+    private val hh get() = height / 2
 
     var inScript = false
     var startScript = 0.0
@@ -59,14 +62,18 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     private val leftBarrier = BarrierObject()
     private val rightBarrier = BarrierObject()
 
-    private val fpsText = SizedStaticText("FPS: ${gameEngine.FPS}", window, 20, Vec2(0.4, 0.4))
-    private val speedText = SizedStaticText(ben.velocity.roundedString(2).joinToString(), window, 20, Vec2(1, 0.2))
-    private val posText = SizedStaticText(ben.position.roundedString(2).joinToString(), window, 20, Vec2(1, 0.2))
+    private val fpsText = SizedStaticText("FPS: ${gameEngine.FPS}", window, 12, Vec2(0.4, 0.4))
+    private val speedText = SizedStaticText(ben.velocity.roundedString(2).joinToString(), window, 12, Vec2(1, 0.2))
+    private val posText = SizedStaticText(ben.position.roundedString(2).joinToString(), window, 12, Vec2(1, 0.2))
 
     private val cloud1 = GameObjects.cloud1
     private val cloud2 = GameObjects.cloud2
     private val cloud3 = GameObjects.cloud3
     private val cloud4 = GameObjects.cloud1
+
+    private val background = Background(TextureLoader[ResourceKey("backgrounds/cindergate fields")])
+    private val lamppost = Lamppost()
+    private val flies = List(10){ FireFly(Vec2(4, -1), 6f, 1f) }
 
     init {
         val stream = gameEngine.resourcesLoader.getStream("levels/$name.pgl")
@@ -85,24 +92,30 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     override fun init() {
         super.init()
 
-        // Setting back depth to 1 ensures it is rendered behind the bunny
-        ben.depth = 0
-
+        width = background.width
         val w = width / 2
 
-        floor.position = Vec2(-w, -hh)
-        leftBarrier.position = Vec2(-w - 1, -hh)
-        rightBarrier.position = Vec2(w, -hh)
+        floor.let{
+            it.position = Vec2(-w, -hh)
+            it.scale = Vec2(width, 0.8)
+        }
+        leftBarrier.let{
+            it.position = Vec2(-w - 1, -hh)
+            it.scale = Vec2(1, height)
+        }
+        rightBarrier.let{
+            it.position = Vec2(w, -hh)
+            it.scale = Vec2(1, height)
+        }
 
-        floor.scale = Vec2(2 * w, 0.8)
-        leftBarrier.scale = Vec2(1, 2 * hh)
-        rightBarrier.scale = Vec2(1, 2 * hh)
+        // Setting back depth to 1 ensures it is rendered behind the bunny
+        ben.depth = 0
 
         ben.translate(Vec2(0, -3.2))
         blake.translate(Vec2(4, -3.2))
 
-        ben.minPos = Vec2(-(this.width - ben.getWidth()) * 0.5f - 5, -5)
-        ben.maxPos = Vec2((this.width - ben.getWidth()) * 0.5f - 5, 10)
+        ben.minPos = Vec2(-(this.width - ben.scale.x) * 0.5f - 5, -5)
+        ben.maxPos = Vec2((this.width - ben.scale.x) * 0.5f - 5, 10)
 
         updateCameraBounds()
         camera.range = Vec2(4, 100)
@@ -111,6 +124,8 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         cloud2.translate(Vec2(-12, 3.5))
         cloud3.translate(Vec2(16, 2))
         cloud4.translate(Vec2(0, 2.8))
+
+        lamppost.translate(Vec2(4.4, -3.2))
 
         fpsText.init()
         posText.init()
@@ -143,6 +158,16 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         add(cloud2)
         add(cloud3)
         add(cloud4)
+
+        background.depth = 10
+        add(background)
+        add(lamppost)
+        lamppost.scale(Vec2(2.5))
+        lamppost.depth = 4
+        flies.forEach {
+            add(it)
+            it.width = 0.1f
+        }
     }
 
     override fun render(window: Window, tickDelta: Double) {

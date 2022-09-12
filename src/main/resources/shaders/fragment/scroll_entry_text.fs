@@ -1,23 +1,18 @@
 // FRAGMENT SHADER INFORMATION
-#version 400 core
+#version 460 core
 
 in vec2 texCoords;
-in mat4 Fmodel;
 
+uniform mat4 model;
 uniform sampler2D ourTexture;
 uniform vec4 colour;
 uniform vec2 limits;
-// texture_section is the y value of the bottom of the texture quad, and the height of the quad
-uniform vec2 texture_section;
 
 out vec4 FragColour;
 
 void main(){
 
-	float height = Fmodel[1][1];
-	// relTex is the height from the bottom of the TextQuad, from 0 to 1
-	float relTex = (texCoords.y - texture_section.x) / texture_section.y;
-	float y = Fmodel[3][1] + (relTex * height);
+	float y = gl_FragCoord.y;
 
 	if(y < limits[0] || y > limits[1]) discard;
 

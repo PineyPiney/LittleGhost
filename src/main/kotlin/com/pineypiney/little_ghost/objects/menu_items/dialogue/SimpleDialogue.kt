@@ -23,7 +23,7 @@ class SimpleDialogue(override val parent: ScriptProcessor, name: String, speech:
             it.transform.position = position + (scale * Vec2(0.75f, 1f) - it.getGameSize()/2)
         }
         speechText.let {
-            it.transform.position = position - Vec2(0, it.separation / 2) + Vec2(padding)
+            it.transform.position = position + Vec2(0, (it.lines.size - 1) * it.defaultCharHeight) + Vec2(padding)
         }
 
         nameText.quickLoad()

@@ -2,6 +2,7 @@ package com.pineypiney.little_ghost
 
 import com.pineypiney.game_engine.GameEngine
 import com.pineypiney.game_engine.resources.FileResourcesLoader
+import com.pineypiney.game_engine.resources.text.FontLoader
 import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.screens.LittleGameScene
@@ -22,10 +23,18 @@ class LittleEngine: GameEngine<LittleLogic>(FileResourcesLoader("src/main/resour
 
     override var activeScreen: LittleLogic = menu
 
+    init {
+        defaultFont = "SemiSlab"
+        FontLoader.INSTANCE.loadFontFromTTF("LightSlab.ttf", resourcesLoader)
+        FontLoader.INSTANCE.loadFontFromTTF("SemiSlab.ttf", resourcesLoader)
+    }
+
     override fun init() {
         UserSettings.loadOptions()
         super.init()
         window.setCursor(TextureLoader.getTexture(ResourceKey("cursor")), Vec2i(8, 0))
+        setMenu(MainMenuScreen(this))
+        openMenu()
     }
 
     fun setGame(game: LittleLogic, delete: Boolean = true){

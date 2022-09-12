@@ -25,7 +25,7 @@ class ChoiceDialogue(override val parent: ScriptProcessor, val choiceDepth: Int,
         scale = Vec2(choices.maxOf(DialogueText::getGameWidth), choices.sumOf(DialogueText::getGameHeight)) + Vec2(padding * 2)
 
         choices.init()
-        choices.forEachIndexed { i, t -> t.transform.position = position + scale * Vec2(0.1, (i.f / choices.size)) }
+        choices.forEachIndexed { i, t -> t.transform.position = position + (scale * Vec2(0.1, (i.f / choices.size))) + Vec2(0, t.getGameHeight()) }
 
         parent.choiceIndices[choiceDepth] = getChoiceIndexes()
 

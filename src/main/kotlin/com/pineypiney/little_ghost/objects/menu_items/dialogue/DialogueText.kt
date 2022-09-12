@@ -7,85 +7,82 @@ import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.LittleLogic
 import com.pineypiney.little_ghost.audio.Audio
 import com.pineypiney.little_ghost.audio.AudioType
-import glm_.c
-import glm_.f
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class DialogueText(text: String, val game: LittleLogic, size: Int, bounds: Vec2 = Vec2(2), colour: Vec4 = Vec4(1)): SizedGameText(text, size, bounds, colour), Updateable {
+class DialogueText(text: String, val game: LittleLogic, size: Int, bounds: Vec2 = Vec2(16, 9), colour: Vec4 = Vec4(1)): SizedGameText(text, size, bounds, colour), Updateable {
 
     var timeTillNextCharacter = 0f
     var shownCharacters = 0
         set(value) {
-            field = value.coerceIn(0, letterIndices.size)
+            field = value.coerceIn(0, text.length)
         }
 
-    val finished: Boolean get() = shownCharacters == letterIndices.size
+    val finished: Boolean get() = shownCharacters == text.length
 
     override fun render(view: Mat4, projection: Mat4, tickDelta: Double) {
-        shader.use()
-        shader.setUniforms(uniforms)
-        shader.setMat4("view", view)
-        shader.setMat4("projection", projection)
-
-        font.texture.bind()
+        if(lines.isEmpty()) return
 
         val originModel = transform.model
+        val totalWidth = lines.maxOf { getWidth(it.trim()) }
 
-        var yOffset = separation * (lines.size - 1)
         var i = 0
         for(line in lines){
+            shader.use()
+            shader.setUniforms(uniforms)
+            shader.setMat4("view", view)
+            shader.setMat4("projection", projection)
 
-            // Add a bit of space at the beginning
-            var xOffset = font.characterSpacing.f
+            val displayLine = line.trim()
+            val alignmentOffset = getAlignment(displayLine, totalWidth)
+            val lineModel = originModel.translate(alignmentOffset, 0f, 0f).scale(defaultCharHeight, defaultCharHeight, 1f)
 
-            for(j in line.indices){
-                if(i >= shownCharacters){
+            val firstIndex = i + line.indexOfFirst { it != ' ' }
+            for(j in displayLine.indices){
+                if(firstIndex + j >= shownCharacters){
                     return
                 }
+                val quad = quads[firstIndex + j]
+                setIndividualUniforms(shader, quad)
 
-                setIndividualUniforms(shader, i)
+                quad.bind()
 
-                val charWidth = getCharWidth(line[j]).f
-                quads[i].bind()
-
-                var model = originModel.scale(Vec3(defaultCharWidth * (charWidth/font.letterWidth), defaultCharHeight, 1))
-                model = model.translate(Vec3(xOffset  / charWidth, yOffset, 0))
+                val model = lineModel.translate(Vec3(quad.offset, 0))
                 shader.setMat4("model", model)
 
-                quads[i].draw()
-                xOffset += (charWidth + font.characterSpacing)
-                i++
+                quad.draw()
             }
 
-            yOffset -= 0.6f
+            if(underlineThickness > 0){
+                renderUnderline(lineModel.translate(Vec3(quads[firstIndex].offset, 0)).scale(getWidth(displayLine) / defaultCharHeight, underlineThickness, 0f).translate(0f, underlineOffset, 0f), view, projection)
+            }
+
+            i += line.length
         }
     }
 
     fun getGameWidth(): Float{
         if(lines.isEmpty()) return 0f
-        return lines.maxOf(::getLineWidth)
-    }
-
-    fun getLineWidth(line: String): Float{
-        return (defaultCharWidth / font.letterWidth) * getPixelWidth(line)
+        return lines.maxOf { getWidth(it) }
     }
 
     fun getGameHeight(): Float{
-        return separation * lines.size * defaultCharHeight
+        return lines.size * defaultCharHeight
     }
 
     fun getGameSize(): Vec2 = Vec2(getGameWidth(), getGameHeight())
 
     fun quickLoad(){
-        shownCharacters = letterIndices.size
+        shownCharacters = text.length
     }
 
     fun addCharacter(){
-        timeTillNextCharacter += timeForChar((letterIndices[shownCharacters] + 32).c)
+        timeTillNextCharacter += timeForChar(text[shownCharacters])
         shownCharacters++
+        // Don't process escape characters
+        while( shownCharacters < text.length && text[shownCharacters] == '\n') shownCharacters++
 
         game.play(Audio(AudioLoader[ResourceKey("text/type_${soundForTime(timeTillNextCharacter)}")], AudioType.SFX))
     }

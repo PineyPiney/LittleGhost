@@ -59,6 +59,10 @@ class ScriptProcessor(val game: LittleGameScene, script: File): Initialisable {
         else if(line.trimStart().startsWith('#')){
             update()
         }
+        // Beat shouldn't do anything rn
+        else if(line.trimStart().startsWith("Beat")){
+            update()
+        }
         // Otherwise, it is a normal instruction and should be parsed as such
         else{
             val (instr, dets) = line.split(':')

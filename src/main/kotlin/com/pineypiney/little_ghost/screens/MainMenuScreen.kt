@@ -21,7 +21,7 @@ import kotlin.math.sign
 
 class MainMenuScreen(gameEngine: LittleEngine) : MenuScreen("clouds2", gameEngine) {
 
-    private val title = SizedStaticText("Little Ghost", window, Vec2(2, 0.5), Vec4(1))
+    private val title = SizedStaticText("Little Ghost", window, 64, Vec2(2, 0.5), Vec4(1))
 
     private val startButton = TextButton("Start Game", Vec2(-0.4, -0.1), Vec2(0.8, 0.3), window){
         setGame(LittleGameScene(gameEngine))

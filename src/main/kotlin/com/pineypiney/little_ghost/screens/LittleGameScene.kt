@@ -16,6 +16,7 @@ import com.pineypiney.little_ghost.objects.decorative.FireFly
 import com.pineypiney.little_ghost.objects.decorative.Lamppost
 import com.pineypiney.little_ghost.objects.entities.characters.InteractableCharacter
 import com.pineypiney.little_ghost.objects.entities.characters.LittleGhostCharacter
+import com.pineypiney.little_ghost.objects.entities.characters.StillCharacter
 import com.pineypiney.little_ghost.objects.util.BarrierObject
 import com.pineypiney.little_ghost.openMenu
 import com.pineypiney.little_ghost.renderers.PixelSceneRenderer
@@ -57,6 +58,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
             startScript = Timer.frameTime
         }
     }
+    private val juliet = StillCharacter(this, ResourceKey("juliet"), TextureLoader[ResourceKey("characters/juliet_sprite")], 2f)
 
     private val floor = BarrierObject()
     private val leftBarrier = BarrierObject()
@@ -113,6 +115,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
 
         ben.translate(Vec2(0, -3.2))
         blake.translate(Vec2(4, -3.2))
+        juliet.translate(Vec2(-4, -3.2))
 
         ben.minPos = Vec2(-(this.width - ben.scale.x) * 0.5f - 5, -5)
         ben.maxPos = Vec2((this.width - ben.scale.x) * 0.5f - 5, 10)
@@ -149,6 +152,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
 
         add(ben)
         add(blake)
+        add(juliet)
 
         add(floor)
         add(leftBarrier)

@@ -4,6 +4,7 @@ import com.pineypiney.game_engine.resources.textures.Texture
 import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.screens.LittleGameScene
+import kotlin.math.sign
 
 class LittleGhostCharacter(scene: LittleGameScene, width: Float): Character(scene, ResourceKey("little_ghost"), width) {
 
@@ -16,7 +17,7 @@ class LittleGhostCharacter(scene: LittleGameScene, width: Float): Character(scen
     }
 
     override fun calcCurrentFrame(): Texture {
-        scale.x = if(walking) 5.6f else 1.4f
+        scale.x = (if(walking) 5.6f else 1.4f) * scale.x.sign
         return super.calcCurrentFrame()
     }
 }

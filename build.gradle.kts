@@ -50,7 +50,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
     // Game Engine
-    implementation("com.github.PineyPiney:GameEngine:ab67842e64")
+    implementation("com.github.PineyPiney:GameEngine:4fc3bf0f6e")
 
     // GLM
     implementation("com.github.kotlin-graphics.glm:glm:375708cf1c0942b0df9d624acddb1c9993f6d92d")

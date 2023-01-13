@@ -2,7 +2,9 @@ package com.pineypiney.little_ghost.screens
 
 import com.pineypiney.game_engine.Timer
 import com.pineypiney.game_engine.Window
+import com.pineypiney.game_engine.objects.game_objects.GameObject
 import com.pineypiney.game_engine.objects.text.SizedStaticText
+import com.pineypiney.game_engine.resources.ResourcesLoader
 import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.game_engine.util.extension_functions.roundedString
@@ -13,7 +15,6 @@ import com.pineypiney.little_ghost.LittleLogic
 import com.pineypiney.little_ghost.objects.GameObjects
 import com.pineypiney.little_ghost.objects.decorative.Background
 import com.pineypiney.little_ghost.objects.decorative.FireFly
-import com.pineypiney.little_ghost.objects.decorative.Lamppost
 import com.pineypiney.little_ghost.objects.entities.characters.InteractableCharacter
 import com.pineypiney.little_ghost.objects.entities.characters.LittleGhostCharacter
 import com.pineypiney.little_ghost.objects.entities.characters.StillCharacter
@@ -32,9 +33,13 @@ import glm_.i
 import glm_.pow
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import kool.lib.toList
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.glClearColor
+import org.lwjgl.stb.STBImage
 import kotlin.math.abs
+import kotlin.math.atan
+import kotlin.math.sqrt
 
 class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : LittleLogic(gameEngine) {
 
@@ -45,12 +50,27 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     val height: Float = 10f
     private val hh get() = height / 2
 
+    init {
+        val stream = gameEngine.resourcesLoader.getStream("levels/$name.pgl")
+        val details: LevelDetails = if(stream == null){
+            LevelDetails("", 50f, Vec3(1))
+        }
+        else{
+            LevelImporter.getLevelInfo(this.name, stream)
+        }
+
+        width = details.width
+        val colour = details.colour
+        glClearColor(colour.r, colour.g, colour.b, 1f)
+
+    }
+
     var inScript = false
     var startScript = 0.0
 
     var movement: MovementMechanics = MovementMechanics(Vec2(0, -20), 54f, 0.4f, 36f, Vec2(-0.32, 0.32))
 
-    private val ben = LittleGhostCharacter(this, 1.4f)
+    private val ben = LittleGhostCharacter(this, 5.6f)
     private val blake = InteractableCharacter(this, ResourceKey("blake"), TextureLoader[ResourceKey("characters/blake_sprite")], 2f){ action, _ ->
         if(action == 1 && !inScript){
             ScriptProcessor(this, "1").init()
@@ -60,9 +80,10 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     }
     private val juliet = StillCharacter(this, ResourceKey("juliet"), TextureLoader[ResourceKey("characters/juliet_sprite")], 2f)
 
-    private val floor = BarrierObject()
-    private val leftBarrier = BarrierObject()
-    private val rightBarrier = BarrierObject()
+    private val afloor = generateFloor("backgrounds/cinder_fields/floor.png", 20).toTypedArray()
+    private val floor = BarrierObject(Vec2(-width / 2, 6-hh), Vec2(width, 0.8f), 0.2f)
+    private val leftBarrier = BarrierObject(Vec2(-(width / 2)-1, -hh), Vec2(1, height))
+    private val rightBarrier = BarrierObject(Vec2(width/2, -hh), Vec2(0, height))
 
     private val fpsText = SizedStaticText("FPS: ${gameEngine.FPS}", window, 12, Vec2(0.4, 0.4))
     private val speedText = SizedStaticText(ben.velocity.roundedString(2).joinToString(), window, 12, Vec2(1, 0.2))
@@ -73,47 +94,23 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
     private val cloud3 = GameObjects.cloud3
     private val cloud4 = GameObjects.cloud1
 
-    private val background = Background(TextureLoader[ResourceKey("backgrounds/cindergate fields")])
-    private val lamppost = Lamppost()
+    private val sky = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/sky")])
+    private val clouds = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/clouds")])
+    private val ground = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/ground")])
+    private val trees = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/trees")])
+    private val bushes = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/bushes")])
+    private val lamppost = Background(TextureLoader[ResourceKey("backgrounds/cinder_fields/lamppost")])
     private val flies = List(10){ FireFly(Vec2(4, -1), 6f, 1f) }
-
-    init {
-        val stream = gameEngine.resourcesLoader.getStream("levels/$name.pgl")
-        val details: LevelDetails = if(stream == null){
-            LevelDetails("", 50f, Vec3(1))
-        }
-        else{
-            LevelImporter.getLevelInfo(this.name, stream)
-        }
-
-        this.width = details.width
-        val colour = details.colour
-        glClearColor(colour.r, colour.g, colour.b, 1f)
-    }
 
     override fun init() {
         super.init()
 
-        width = background.width
-        val w = width / 2
-
-        floor.let{
-            it.position = Vec2(-w, -hh)
-            it.scale = Vec2(width, 0.8)
-        }
-        leftBarrier.let{
-            it.position = Vec2(-w - 1, -hh)
-            it.scale = Vec2(1, height)
-        }
-        rightBarrier.let{
-            it.position = Vec2(w, -hh)
-            it.scale = Vec2(1, height)
-        }
+        width = sky.width
 
         // Setting back depth to 1 ensures it is rendered behind the bunny
         ben.depth = 0
 
-        ben.translate(Vec2(0, -3.2))
+//        ben.translate(Vec2(0, -3.2))
         blake.translate(Vec2(4, -3.2))
         juliet.translate(Vec2(-4, -3.2))
 
@@ -127,8 +124,6 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         cloud2.translate(Vec2(-12, 3.5))
         cloud3.translate(Vec2(16, 2))
         cloud4.translate(Vec2(0, 2.8))
-
-        lamppost.translate(Vec2(4.4, -3.2))
 
         fpsText.init()
         posText.init()
@@ -150,26 +145,18 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
             }
         }
 
-        add(ben)
-        add(blake)
-        add(juliet)
+        sky.depth = 10
+        clouds.depth = 9
+        ground.depth = 8
+        trees.depth = 7
+        bushes.depth = -1
+        lamppost.depth = -2
 
-        add(floor)
-        add(leftBarrier)
-        add(rightBarrier)
+        addall(ben, afloor[10], leftBarrier, rightBarrier, cloud1, cloud2, cloud3, cloud4, sky, clouds, ground, trees, bushes, lamppost)
+//        addall(blake, juliet)
 
-        add(cloud1)
-        add(cloud2)
-        add(cloud3)
-        add(cloud4)
-
-        background.depth = 10
-        add(background)
-        add(lamppost)
-        lamppost.scale(Vec2(2.5))
-        lamppost.depth = 4
         flies.forEach {
-            add(it)
+            addall(it)
             it.width = 0.1f
         }
     }
@@ -285,6 +272,41 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         }
 
         return action
+    }
+
+    fun addall(vararg objects: GameObject){
+        objects.forEach { add(it) }
+    }
+
+    fun generateFloor(texture: String, sections: Int): List<BarrierObject>{
+
+        val widtha = IntArray(1)
+        val heighta = IntArray(1)
+        val channsa = IntArray(1)
+
+        val bytes = ResourcesLoader.ioResourceToByteBuffer(gameEngine.resourcesLoader.getStream("textures/$texture") ?: return listOf(), 1048576)
+        val buffer = STBImage.stbi_load_from_memory(bytes, widtha, heighta, channsa, 0) ?: return listOf()
+
+        val rows = buffer.toList().chunked(channsa[0]){ it.sum() }.chunked(widtha[0])
+        val heights = FloatArray(widtha[0]){ c -> (0 until heighta[0]).reversed().first { r -> rows[r][c] != -3 }.f * height / heighta[0] - (height/2) }
+
+        val secLen = width / sections
+
+        val s = List(sections){
+            val h1 = heights[((heights.size.f - 1) * it / sections).i]
+            val h2 = heights[((heights.size.f - 1) * (it + 1) / sections).i]
+
+            val left = ((it.f / sections) - 0.5f) * width
+            val angle = atan((h2 - h1) / secLen)
+            val o = Vec2(left, h1) - Vec2(0, 1).rotate(angle)
+
+            val length = sqrt((h2-h1).pow(2) + (secLen*secLen))
+
+            val b = BarrierObject(o, Vec2(length, 1), -angle)
+            b
+        }
+
+        return s
     }
 
     override fun cleanUp() {

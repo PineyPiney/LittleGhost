@@ -3,7 +3,7 @@ package com.pineypiney.little_ghost.objects.menu_items.dialogue
 import com.pineypiney.game_engine.IGameLogic
 import com.pineypiney.game_engine.util.extension_functions.delete
 import com.pineypiney.game_engine.util.extension_functions.init
-import com.pineypiney.game_engine.util.maths.shapes.Rect
+import com.pineypiney.game_engine.util.maths.shapes.Rect3D
 import com.pineypiney.game_engine.util.raycasting.Ray
 import com.pineypiney.little_ghost.util.ScriptProcessor
 import glm_.f
@@ -45,7 +45,7 @@ class ChoiceDialogue(override val parent: ScriptProcessor, val choiceDepth: Int,
     override fun updateCursorPos(ray: Ray) {
         super.updateCursorPos(ray)
 
-        chosen = getSelected(Vec2(ray.intersects(Rect(position, scale))!!))
+        chosen = getSelected(Vec2(ray.intersects(Rect3D(position, scale))!!))
         choices.forEachIndexed { i, t ->
             if(i == chosen) t.colour = selectColour
             else t.colour = textColour

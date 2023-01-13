@@ -10,20 +10,24 @@ import com.pineypiney.game_engine.resources.audio.AudioLoader
 import com.pineypiney.game_engine.resources.shaders.Shader
 import com.pineypiney.game_engine.resources.textures.Texture
 import com.pineypiney.game_engine.util.ResourceKey
+import com.pineypiney.game_engine.util.extension_functions.angle
 import com.pineypiney.game_engine.util.extension_functions.coerceIn
 import com.pineypiney.game_engine.util.extension_functions.copy
 import com.pineypiney.game_engine.util.extension_functions.round
-import com.pineypiney.game_engine.util.maths.shapes.Rect
+import com.pineypiney.game_engine.util.maths.shapes.Rect3D
 import com.pineypiney.game_engine.util.raycasting.Ray
 import com.pineypiney.little_ghost.screens.LittleGameScene
 import com.pineypiney.little_ghost.screens.MovementMechanics
 import glm_.detail.Random
 import glm_.f
+import glm_.func.common.abs
 import glm_.i
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import org.lwjgl.glfw.GLFW.glfwGetTime
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.cos
 
 abstract class Character(var scene: LittleGameScene, override val id: ResourceKey, width: Float = 1f): AnimatedObject2D(
     defaultShader), Interactable {
@@ -35,7 +39,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
     override var pressed: Boolean = false
 
     private val m: MovementMechanics; get() = scene.movement
-    val collider = SoftCollisionBox(this, Vec2(-0.5), Vec2(1))
+    open val collider = SoftCollisionBox(this, Vec2(-0.5), Vec2(1))
 
     // Keep the velocity within the bounds set by the scene the character is in
     override var velocity: Vec2 = Vec2()
@@ -159,18 +163,28 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
 
     fun move(movement: Vec2): Vec2 {
-        val collidedMove = movement.copy()
+        var collidedMove = movement.copy()
 
         // Create a temporary collision box in the new position to calculate collisions
         val newCollision = collider.copy()
-        newCollision.origin += (movement / this.scale)
+        newCollision.origin += (movement / scale)
 
         // Iterate over all collision boxes sharing object collections and
         // eject this collision boxes object if the collision boxes collide
-        for(it in objects){
-            val collisions = it.getAllCollisions()
+        i@for(it in objects){
+            val collisions = it.getAllCollisions().filterIsInstance<HardCollisionBox>()
             for(box in collisions){
-                if(box != collider && box is HardCollisionBox) collidedMove plusAssign  newCollision.getEjectionVector(box)
+                var e = newCollision.getEjectionVector(box)
+                if(e.x != 0f && -e.y / e.x.abs > 2){
+                    val l = e.length() / cos(e.angle())
+                    e = Vec2(0, l.abs)
+                }
+                val testCollision = newCollision.copy()
+                testCollision.origin += (e / scale)
+                if(collisions.none { c -> c.collidesWith(testCollision) }){
+                    collidedMove = movement + e
+                    break@i
+                }
             }
         }
 
@@ -182,7 +196,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
     }
 
     override fun checkHover(ray: Ray, screenPos: Vec2): Boolean {
-        val rect = Rect(position - scale/2, scale)
+        val rect = Rect3D(position - scale/2, scale)
         val h = ray.passesThroughRect(rect)
         return h
     }

@@ -7,7 +7,7 @@ import com.pineypiney.game_engine.objects.game_objects.objects_2D.RenderedGameOb
 import com.pineypiney.game_engine.objects.util.shapes.Shape
 import com.pineypiney.game_engine.resources.shaders.ShaderLoader
 import com.pineypiney.game_engine.util.ResourceKey
-import com.pineypiney.game_engine.util.maths.shapes.Rect
+import com.pineypiney.game_engine.util.maths.shapes.Rect3D
 import com.pineypiney.game_engine.util.raycasting.Ray
 import com.pineypiney.little_ghost.util.ScriptProcessor
 import glm_.f
@@ -58,7 +58,7 @@ abstract class DialogueBubble: InteractableGameObject2D(shader) {
     abstract fun quickLoadText()
 
     open fun updateCursorPos(ray: Ray){
-        hover = ray.passesThroughRect(Rect(position, scale))
+        hover = ray.passesThroughRect(Rect3D(position, scale))
     }
 
     override fun copy(): RenderedGameObject2D {

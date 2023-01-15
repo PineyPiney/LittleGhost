@@ -10,10 +10,7 @@ import com.pineypiney.game_engine.resources.audio.AudioLoader
 import com.pineypiney.game_engine.resources.shaders.Shader
 import com.pineypiney.game_engine.resources.textures.Texture
 import com.pineypiney.game_engine.util.ResourceKey
-import com.pineypiney.game_engine.util.extension_functions.angle
-import com.pineypiney.game_engine.util.extension_functions.coerceIn
-import com.pineypiney.game_engine.util.extension_functions.copy
-import com.pineypiney.game_engine.util.extension_functions.round
+import com.pineypiney.game_engine.util.extension_functions.*
 import com.pineypiney.game_engine.util.maths.shapes.Rect3D
 import com.pineypiney.game_engine.util.raycasting.Ray
 import com.pineypiney.little_ghost.screens.LittleGameScene
@@ -174,17 +171,17 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
         i@for(it in objects){
             val collisions = it.getAllCollisions().filterIsInstance<HardCollisionBox>()
             for(box in collisions){
-                var e = newCollision.getEjectionVector(box)
-                if(e.x != 0f && -e.y / e.x.abs > 2){
-                    val l = e.length() / cos(e.angle())
-                    e = Vec2(0, l.abs)
-                }
+                if(!newCollision.collidesWith(box)) continue
+                val normals = box.box.normals(newCollision.box)
+                val se = normals.associateWith { newCollision.box.overlap1D(it, box.box) }.minBy { it.value.abs }
+                val dir = collider.box.normals(collider.box).flatMap { listOf(it, -it) }.minBy { it dot se.key }
+                val angle = (dir.angle() - (-se.key).angle()).wrap(0f, 2 * PI.f)
+
+                val l = se.value / cos(angle).abs
+                val e = dir * l.abs
                 val testCollision = newCollision.copy()
                 testCollision.origin += (e / scale)
-                if(collisions.none { c -> c.collidesWith(testCollision) }){
-                    collidedMove = movement + e
-                    break@i
-                }
+                collidedMove plusAssign e
             }
         }
 

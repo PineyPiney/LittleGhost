@@ -1,4 +1,4 @@
 Resolution:window
 Master Volume:0.25557458
-Music Volume:0.0
-SFX Volume:1.0
+Music Volume:0.17447919
+SFX Volume:0.5182291

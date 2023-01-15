@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    val kotlinVersion = "1.7.10"
+    val kotlinVersion = "1.8.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
@@ -50,7 +50,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
 
     // Game Engine
-    implementation("com.github.PineyPiney:GameEngine:4fc3bf0f6e")
+    implementation("com.github.PineyPiney:GameEngine:a546ada864")
 
     // GLM
     implementation("com.github.kotlin-graphics.glm:glm:375708cf1c0942b0df9d624acddb1c9993f6d92d")

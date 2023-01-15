@@ -36,7 +36,6 @@ import glm_.vec3.Vec3
 import kool.lib.toList
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.glClearColor
-import org.lwjgl.stb.STBImage
 import kotlin.math.abs
 import kotlin.math.atan
 import kotlin.math.sqrt
@@ -152,7 +151,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         bushes.depth = -1
         lamppost.depth = -2
 
-        addall(ben, afloor[10], leftBarrier, rightBarrier, cloud1, cloud2, cloud3, cloud4, sky, clouds, ground, trees, bushes, lamppost)
+        addall(ben, *afloor, leftBarrier, rightBarrier, cloud1, cloud2, cloud3, cloud4, sky, clouds, ground, trees, bushes, lamppost)
 //        addall(blake, juliet)
 
         flies.forEach {
@@ -280,15 +279,12 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
 
     fun generateFloor(texture: String, sections: Int): List<BarrierObject>{
 
-        val widtha = IntArray(1)
-        val heighta = IntArray(1)
-        val channsa = IntArray(1)
-
         val bytes = ResourcesLoader.ioResourceToByteBuffer(gameEngine.resourcesLoader.getStream("textures/$texture") ?: return listOf(), 1048576)
-        val buffer = STBImage.stbi_load_from_memory(bytes, widtha, heighta, channsa, 0) ?: return listOf()
+        val (buffer, info) = TextureLoader.loadImageFromMemory(bytes, true)
+        if(buffer == null) return listOf()
 
-        val rows = buffer.toList().chunked(channsa[0]){ it.sum() }.chunked(widtha[0])
-        val heights = FloatArray(widtha[0]){ c -> (0 until heighta[0]).reversed().first { r -> rows[r][c] != -3 }.f * height / heighta[0] - (height/2) }
+        val rows = buffer.toList().chunked(info.z){ it.sum() }.chunked(info.x)
+        val heights = FloatArray(info.x){ c -> (0 until info.y).reversed().first { r -> rows[r][c] != -3 }.f * height / info.y - (height/2) }
 
         val secLen = width / sections
 

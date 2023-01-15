@@ -7,9 +7,11 @@ import com.pineypiney.little_ghost.LittleEngine
 import com.pineypiney.little_ghost.LittleLogic
 import com.pineypiney.little_ghost.objects.menu_items.MenuBackground
 import com.pineypiney.little_ghost.renderers.MenuRenderer
+import glm_.f
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.opengl.GL11C
 
-open class MenuScreen(val background: MenuBackground, gameEngine: LittleEngine) : LittleLogic(gameEngine) {
+open class MenuScreen(val background: MenuBackground?, gameEngine: LittleEngine) : LittleLogic(gameEngine) {
 
     constructor(background: Texture, gameEngine: LittleEngine): this(MenuBackground(background), gameEngine)
     constructor(backgroundName: String, gameEngine: LittleEngine): this(MenuBackground("backgrounds/$backgroundName"), gameEngine)
@@ -24,7 +26,7 @@ open class MenuScreen(val background: MenuBackground, gameEngine: LittleEngine) 
     }
 
     override fun addObjects() {
-        add(background)
+        if(background != null) add(background)
     }
 
     override fun open() {
@@ -44,9 +46,17 @@ open class MenuScreen(val background: MenuBackground, gameEngine: LittleEngine) 
         renderer.render(window, this, tickDelta)
     }
 
+    fun setColour(r: Int, g: Int, b: Int, a: Int = 255){
+        GL11C.glClearColor(r.f/255, g.f/255, b.f/255, a.f/255)
+    }
+
+    fun setColour(colour: Int, a: Int = 255){
+        setColour((colour shr 16) and 255, (colour shr 8) and 255, colour and 255, a)
+    }
+
     override fun cleanUp() {
         super.cleanUp()
 
-        background.delete()
+        background?.delete()
     }
 }

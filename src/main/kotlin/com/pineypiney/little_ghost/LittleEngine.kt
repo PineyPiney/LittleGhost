@@ -3,8 +3,6 @@ package com.pineypiney.little_ghost
 import com.pineypiney.game_engine.GameEngine
 import com.pineypiney.game_engine.resources.FileResourcesLoader
 import com.pineypiney.game_engine.resources.text.FontLoader
-import com.pineypiney.game_engine.resources.textures.TextureLoader
-import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.little_ghost.screens.LittleGameScene
 import com.pineypiney.little_ghost.screens.MainMenuScreen
 import com.pineypiney.little_ghost.screens.MenuScreen
@@ -32,7 +30,9 @@ class LittleEngine: GameEngine<LittleLogic>(FileResourcesLoader("src/main/resour
     override fun init() {
         UserSettings.loadOptions()
         super.init()
-        window.setCursor(TextureLoader.getTexture(ResourceKey("cursor")), Vec2i(8, 0))
+        resourcesLoader.getStream("cursor.png")?.let {
+            window.setCursor(it, Vec2i(8, 0))
+        }
         setMenu(MainMenuScreen(this))
         openMenu()
     }

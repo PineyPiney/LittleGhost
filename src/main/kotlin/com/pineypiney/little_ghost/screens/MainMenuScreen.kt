@@ -6,26 +6,28 @@ import com.pineypiney.game_engine.objects.util.shapes.Shape
 import com.pineypiney.game_engine.resources.audio.AudioLoader
 import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
+import com.pineypiney.game_engine.util.extension_functions.fromHex
 import com.pineypiney.game_engine.util.input.Inputs
 import com.pineypiney.little_ghost.*
 import com.pineypiney.little_ghost.audio.Audio
 import com.pineypiney.little_ghost.audio.AudioType
-import com.pineypiney.little_ghost.objects.menu_items.MenuButton
+import com.pineypiney.little_ghost.objects.menu_items.TextButton
 import glm_.vec2.Vec2
+import glm_.vec4.Vec4
 
-class MainMenuScreen(gameEngine: LittleEngine) : MenuScreen(null, gameEngine) {
+class MainMenuScreen(gameEngine: LittleEngine) : MenuScreen(gameEngine) {
 
-    private val startButton = MenuButton(TextureLoader[ResourceKey("menus/play")], Vec2(0, 0.75), 0.1f){
+    private val startButton = TextButton("Play", Vec2(0, 0.75), 0.1f, Vec4.fromHex(0xF5E5DF, 0.8f)){
         setGame(LittleGameScene(gameEngine))
         openGame()
     }
 
-    private val optionsButton = MenuButton(TextureLoader[ResourceKey("menus/options")], Vec2(-0.15, 0.6), 0.1f){
+    private val optionsButton = TextButton("Options", Vec2(-0.15, 0.6), 0.1f, Vec4.fromHex(0xF5E5DF, 0.8f)){
         setMenu(OptionsMenuScreen(this, gameEngine), false)
         openMenu()
     }
 
-    private val exitButton = MenuButton(TextureLoader[ResourceKey("menus/quit")], Vec2(0, 0.45), 0.1f){
+    private val exitButton = TextButton("Quit", Vec2(0, 0.45), 0.1f, Vec4.fromHex(0xF5E5DF, 0.8f)){
         window.shouldClose = true
     }
 
@@ -41,7 +43,6 @@ class MainMenuScreen(gameEngine: LittleEngine) : MenuScreen(null, gameEngine) {
 
         ben.scale = Vec2(6 * ben.texture.aspectRatio, 6)
 
-        setColour(0xD4A290)
         play(Audio(music, AudioType.MUSIC, 1f, 0.6f), true)
     }
 

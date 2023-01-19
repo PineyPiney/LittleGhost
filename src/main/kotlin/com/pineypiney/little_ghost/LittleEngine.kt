@@ -16,16 +16,17 @@ class LittleEngine: GameEngine<LittleLogic>(FileResourcesLoader("src/main/resour
     override var TARGET_FPS: Int = 1000
     override val TARGET_UPS: Int = 20
 
-    var game: LittleLogic = LittleGameScene(this)
-    var menu: MenuScreen = MainMenuScreen(this)
-
-    override var activeScreen: LittleLogic = menu
-
     init {
-        defaultFont = "SemiSlab"
+        defaultFont = "theemy_font"
+        FontLoader.INSTANCE.loadFontWithTexture("theemy_font.bmp", resourcesLoader, 75, 150, 0.04f)
         FontLoader.INSTANCE.loadFontFromTTF("LightSlab.ttf", resourcesLoader)
         FontLoader.INSTANCE.loadFontFromTTF("SemiSlab.ttf", resourcesLoader)
     }
+
+    var menu: MenuScreen = MainMenuScreen(this)
+    var game: LittleLogic = LittleGameScene(this)
+
+    override var activeScreen: LittleLogic = menu
 
     override fun init() {
         UserSettings.loadOptions()

@@ -47,6 +47,6 @@ class MenuButton(texture: Texture, origin: Vec2, height: Float, action: (Abstrac
         val underline = TextureLoader[ResourceKey("menus/underline")]
         val underlineShader = ShaderLoader[ResourceKey("vertex/menu"), ResourceKey("fragment/underline")]
 
-        private val scribble = AudioLoader[ResourceKey("scribble")]
+        val scribble = AudioLoader[ResourceKey("scribble")]
     }
 }

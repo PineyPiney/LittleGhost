@@ -1,12 +1,10 @@
 package com.pineypiney.little_ghost.objects.menu_items
 
 import com.pineypiney.game_engine.Window
-import com.pineypiney.game_engine.objects.menu_items.scroll_lists.ScrollerText
 import com.pineypiney.game_engine.objects.menu_items.scroll_lists.SelectableScrollingListEntry
 import com.pineypiney.game_engine.objects.menu_items.scroll_lists.SelectableScrollingListItem
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.game_engine.util.input.InputState
-import com.pineypiney.little_ghost.LittleWindow
 import com.pineypiney.little_ghost.util.KeyBind
 import com.pineypiney.little_ghost.util.KeyBinds
 import glm_.vec2.Vec2
@@ -36,14 +34,16 @@ class KeyBindList(override var origin: Vec2, override val size: Vec2, override v
         }
     }
 
-    class KeyBindMenuEntry(parent: KeyBindList, number: Int, val key: ResourceKey): SelectableScrollingListEntry<KeyBindList>(parent, number) {
+    class KeyBindMenuEntry(parent: KeyBindList, number: Int, private val key: ResourceKey): SelectableScrollingListEntry<KeyBindList>(parent, number) {
 
         private var binding: KeyBind = KeyBinds.getKeyBinding(key)
 
-        var text: ScrollerText = ScrollerText(binding.bind.toString(), LittleWindow.INSTANCE, size * Vec2(0.3, 0.8), limits, defaultColour)
+        var nameText = SizedScrollerText(KeyBinds.keyBindNames[key] ?: "Unnamed", 20, limits, defaultColour)
+        var text: SizedScrollerText = SizedScrollerText(binding.bind.toString(), 20, limits, defaultColour)
 
         override fun init() {
             super.init()
+            nameText.init()
             text.init()
         }
 
@@ -64,24 +64,29 @@ class KeyBindList(override var origin: Vec2, override val size: Vec2, override v
 
         override fun select(){
             super.select()
+            nameText.colour= selectedColour
             text.colour = selectedColour
         }
 
         override fun unselect(){
             super.unselect()
+            nameText.colour = defaultColour
             text.colour = defaultColour
         }
 
         override fun draw() {
             super.draw()
-            text.drawCenteredLeft(origin + (size * Vec2(0.05, 0.5)))
+            nameText.drawCenteredLeft(origin + (size * Vec2(0.05, 0.5)))
+            text.drawCenteredRight(origin + (size * Vec2(0.95, 0.5)))
         }
 
         override fun updateAspectRatio(window: Window) {
+            nameText.updateAspectRatio(window)
             text.updateAspectRatio(window)
         }
 
         override fun delete() {
+            nameText.delete()
             text.delete()
         }
 

@@ -8,7 +8,8 @@ import glm_.vec4.Vec4
 class SimpleDialogue(override val parent: ScriptProcessor, name: String, speech: String): DialogueBubble() {
 
     val nameText = DialogueText(name, parent.game, 75, Vec2((parent.game.camera.getSpan().x / 2) - padding * 2), textColour)
-    val speechText = DialogueText(speech.split("\\n").map { it.trim() }.joinToString("\n"), parent.game, 75, Vec2((parent.game.camera.getSpan().x / 2) - padding * 2), textColour)
+    val speechText = DialogueText(speech.split("\\n").joinToString("\n") { it.trim() }, parent.game, 75, Vec2((parent.game.camera.getSpan().x / 2) - padding * 2), textColour)
+    val nameBack = NameBackground(nameText, this)
 
     override val textLoaded: Boolean get() = speechText.finished
 
@@ -26,6 +27,8 @@ class SimpleDialogue(override val parent: ScriptProcessor, name: String, speech:
             it.transform.position = position + Vec2(0, (it.lines.size - 1) * it.defaultCharHeight) + Vec2(padding)
         }
 
+        nameBack.init()
+
         nameText.quickLoad()
 
         super.init()
@@ -34,11 +37,10 @@ class SimpleDialogue(override val parent: ScriptProcessor, name: String, speech:
     override fun render(view: Mat4, projection: Mat4, tickDelta: Double) {
         super.render(view, projection, tickDelta)
 
-
-
         nameText.colour.w = opaqueness
         speechText.colour.w = opaqueness
 
+        nameBack.render(view, projection, tickDelta)
         nameText.render(view, projection, tickDelta)
         speechText.render(view, projection, tickDelta)
     }

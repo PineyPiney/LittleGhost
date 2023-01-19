@@ -7,6 +7,7 @@ import com.pineypiney.game_engine.objects.text.SizedStaticText
 import com.pineypiney.game_engine.resources.ResourcesLoader
 import com.pineypiney.game_engine.resources.textures.TextureLoader
 import com.pineypiney.game_engine.util.ResourceKey
+import com.pineypiney.game_engine.util.extension_functions.lerp
 import com.pineypiney.game_engine.util.extension_functions.roundedString
 import com.pineypiney.game_engine.util.input.InputState
 import com.pineypiney.game_engine.util.input.Inputs
@@ -29,6 +30,7 @@ import com.pineypiney.little_ghost.util.KeyBinds
 import com.pineypiney.little_ghost.util.ScriptProcessor
 import glm_.f
 import glm_.func.common.abs
+import glm_.func.common.floor
 import glm_.i
 import glm_.pow
 import glm_.vec2.Vec2
@@ -36,6 +38,7 @@ import glm_.vec3.Vec3
 import kool.lib.toList
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.glClearColor
+import javax.imageio.ImageIO
 import kotlin.math.abs
 import kotlin.math.atan
 import kotlin.math.sqrt
@@ -78,11 +81,18 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         }
     }
     private val juliet = StillCharacter(this, ResourceKey("juliet"), TextureLoader[ResourceKey("characters/juliet_sprite")], 2f)
+    private val sammy = InteractableCharacter(this, ResourceKey("sammy"), TextureLoader[ResourceKey("characters/fwoog")], 2f){ action, _ ->
+        if(action == 1 && !inScript){
+            ScriptProcessor(this, "fwoog").init()
+            inScript = true
+            startScript = Timer.frameTime
+        }
+    }
 
-    private val afloor = generateFloor("backgrounds/cinder_fields/floor.png", 20).toTypedArray()
+    val afloor = generateFloor("backgrounds/cinder_fields/floor.png")
     private val floor = BarrierObject(Vec2(-width / 2, 6-hh), Vec2(width, 0.8f), 0.2f)
-    private val leftBarrier = BarrierObject(Vec2(-(width / 2)-1, -hh), Vec2(1, height))
-    private val rightBarrier = BarrierObject(Vec2(width/2, -hh), Vec2(0, height))
+    private val leftBarrier = BarrierObject(Vec2(-(width / 2)-1, -hh), Vec2(1, height * 3))
+    private val rightBarrier = BarrierObject(Vec2(width/2, -hh), Vec2(1, height * 3))
 
     private val fpsText = SizedStaticText("FPS: ${gameEngine.FPS}", window, 12, Vec2(0.4, 0.4))
     private val speedText = SizedStaticText(ben.velocity.roundedString(2).joinToString(), window, 12, Vec2(1, 0.2))
@@ -110,8 +120,9 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         ben.depth = 0
 
 //        ben.translate(Vec2(0, -3.2))
-        blake.translate(Vec2(4, -3.2))
-        juliet.translate(Vec2(-4, -3.2))
+        blake.translate(Vec2(4, 0))
+        juliet.translate(Vec2(-4, 0))
+        sammy.translate(Vec2(8, 0))
 
         ben.minPos = Vec2(-(this.width - ben.scale.x) * 0.5f - 5, -5)
         ben.maxPos = Vec2((this.width - ben.scale.x) * 0.5f - 5, 10)
@@ -151,8 +162,8 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         bushes.depth = -1
         lamppost.depth = -2
 
-        addall(ben, *afloor, leftBarrier, rightBarrier, cloud1, cloud2, cloud3, cloud4, sky, clouds, ground, trees, bushes, lamppost)
-//        addall(blake, juliet)
+        addall(ben, leftBarrier, rightBarrier, cloud1, cloud2, cloud3, cloud4, sky, clouds, ground, trees, bushes, lamppost)
+        addall(blake, juliet, sammy)
 
         flies.forEach {
             addall(it)
@@ -264,7 +275,7 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
             return INTERRUPT
         }
 
-        for((_, value) in KeyBinds.keyBinds.entries){
+        for(value in KeyBinds.keyBinds.values){
             if(value activatedBy state){
                 value.state = action
             }
@@ -303,6 +314,18 @@ class LittleGameScene(gameEngine: LittleEngine, val name: String = "EXAMPLE") : 
         }
 
         return s
+    }
+
+    fun generateFloor(texture: String): FloatArray{
+
+        val image = ImageIO.read(gameEngine.resourcesLoader.getStream("textures/$texture") ?: return floatArrayOf())
+        return FloatArray(image.width){ (image.raster.dataBuffer.getElem(it).f / 255f - 0.5f) * height}
+    }
+
+    fun floorAt(x: Float): Float{
+        val delta = (((x / width) + 0.5f) * afloor.size)
+        val left = delta.floor.i.coerceIn(0, afloor.size - 2)
+        return afloor[left].lerp(afloor[left + 1], delta.mod(1f))
     }
 
     override fun cleanUp() {

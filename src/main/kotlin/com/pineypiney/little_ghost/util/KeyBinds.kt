@@ -3,6 +3,7 @@ package com.pineypiney.little_ghost.util
 import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.game_engine.util.extension_functions.getOrNull
 import com.pineypiney.game_engine.util.input.ControlType
+import com.pineypiney.game_engine.util.input.InputState
 import glm_.s
 import org.lwjgl.glfw.GLFW
 
@@ -21,7 +22,7 @@ class KeyBinds {
 
             Pair(ResourceKey("key/attack"), KeyBind(GLFW.GLFW_MOUSE_BUTTON_1, ControlType.MOUSE)),
 
-            Pair(ResourceKey("key/fullscreen"), KeyBind(GLFW.GLFW_KEY_F)),
+            Pair(ResourceKey("key/fullscreen"), KeyBind(GLFW.GLFW_KEY_F11)),
         )
 
         val keyBinds: MutableMap<ResourceKey, KeyBind> = defaultKeyBinds.toMutableMap()
@@ -29,6 +30,11 @@ class KeyBinds {
         fun isActive(id: ResourceKey): Boolean{
             val bind = keyBinds.getOrNull(id) ?: return false
             return bind.state > 0
+        }
+
+        fun isActivatedBy(id: ResourceKey, state: InputState): Boolean{
+            val bind = keyBinds[id] ?: return false
+            return bind.activatedBy(state)
         }
 
         private val modStates: MutableMap<Short, Boolean> = mutableMapOf(
@@ -56,5 +62,16 @@ class KeyBinds {
         fun getKeyBindingForKey(key: Short, type: ControlType): KeyBind?{
             return keyBinds.values.firstOrNull { bind -> bind.key == key && bind.controlType == type }
         }
+
+        val keyBindNames = mapOf(
+            ResourceKey("key/left") to "Left",
+            ResourceKey("key/right") to "Right",
+            ResourceKey("key/sprint") to "Sprint",
+            ResourceKey("key/jump") to "Jump",
+            ResourceKey("key/primary") to "Primary",
+            ResourceKey("key/secondary") to "Secondary",
+            ResourceKey("key/attack") to "Attack",
+            ResourceKey("key/fullscreen") to "Fullscreen"
+        )
     }
 }

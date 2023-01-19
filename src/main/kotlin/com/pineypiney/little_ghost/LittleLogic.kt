@@ -3,10 +3,13 @@ package com.pineypiney.little_ghost
 import com.pineypiney.game_engine.GameLogic
 import com.pineypiney.game_engine.objects.Interactable
 import com.pineypiney.game_engine.rendering.cameras.OrthographicCamera
+import com.pineypiney.game_engine.util.ResourceKey
 import com.pineypiney.game_engine.util.extension_functions.delete
+import com.pineypiney.game_engine.util.input.InputState
 import com.pineypiney.game_engine.util.input.Inputs
 import com.pineypiney.little_ghost.audio.Audio
 import com.pineypiney.little_ghost.renderers.PixelRenderer
+import com.pineypiney.little_ghost.util.KeyBinds
 import org.lwjgl.openal.AL10
 
 abstract class LittleLogic(final override val gameEngine: LittleEngine) : GameLogic() {
@@ -44,8 +47,19 @@ abstract class LittleLogic(final override val gameEngine: LittleEngine) : GameLo
         sounds.forEach { it.updateVolume() }
     }
 
+    override fun onInput(state: InputState, action: Int): Int {
+        if(KeyBinds.isActivatedBy(ResourceKey("key/fullscreen"), state) && action == 1) toggleFullscreen()
+
+        return super.onInput(state, action)
+    }
+
     open fun regenerateFrameBuffers(){
         renderer.regenerateFrameBuffers()
+    }
+
+    override fun setFullscreen(state: Boolean) {
+        super.setFullscreen(state)
+        regenerateFrameBuffers()
     }
 
     override fun cleanUp() {

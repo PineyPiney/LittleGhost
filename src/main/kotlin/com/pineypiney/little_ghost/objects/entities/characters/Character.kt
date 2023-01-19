@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFW.glfwGetTime
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.sign
 
 abstract class Character(var scene: LittleGameScene, override val id: ResourceKey, width: Float = 1f): AnimatedObject2D(
     defaultShader), Interactable {
@@ -37,6 +38,8 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
     private val m: MovementMechanics; get() = scene.movement
     open val collider = SoftCollisionBox(this, Vec2(-0.5), Vec2(1))
+
+    val levelFloor: Float get() = scene.floorAt(position.x)
 
     // Keep the velocity within the bounds set by the scene the character is in
     override var velocity: Vec2 = Vec2()
@@ -89,6 +92,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
     private val grounded: Boolean; get(){
         return if(velocity.y == 0f){
 
+            if(collider.box.points.minOf { it.y } - levelFloor < 0.01f) return true
             // If moving the collision box down by a small amount causes it to have an
             // upwards ejection vector with any of its collisions, then it is grounded
             val newCollision = collider.copy()
@@ -141,6 +145,12 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
         // Position = Velocity * Time
         translate(move((velocity * interval)))
+        val floor = levelFloor
+        val bottom = collider.box.points.minOf { it.y }
+        if(bottom < floor){
+            translate(Vec2(0, floor - bottom))
+            velocity.y = 0f
+        }
     }
 
     fun jump(){
@@ -160,7 +170,7 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
 
 
     fun move(movement: Vec2): Vec2 {
-        var collidedMove = movement.copy()
+        val collidedMove = movement.copy()
 
         // Create a temporary collision box in the new position to calculate collisions
         val newCollision = collider.copy()
@@ -173,8 +183,10 @@ abstract class Character(var scene: LittleGameScene, override val id: ResourceKe
             for(box in collisions){
                 if(!newCollision.collidesWith(box)) continue
                 val normals = box.box.normals(newCollision.box)
+                // The shortest exit vector from the collider paired with the distance
                 val se = normals.associateWith { newCollision.box.overlap1D(it, box.box) }.minBy { it.value.abs }
-                val dir = collider.box.normals(collider.box).flatMap { listOf(it, -it) }.minBy { it dot se.key }
+
+                val dir = collider.box.normals().associateWith { it dot se.key }.maxBy{ it.value.abs }.run { key * value * se.value.sign }
                 val angle = (dir.angle() - (-se.key).angle()).wrap(0f, 2 * PI.f)
 
                 val l = se.value / cos(angle).abs

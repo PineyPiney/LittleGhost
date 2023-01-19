@@ -70,7 +70,7 @@ class ScriptProcessor(val game: LittleGameScene, script: File): Initialisable {
                 "Choice" -> addDialogue(choice(dets.split('/').map { between(it) }))
                 "Jump" -> jump(between(dets))
                 "Beat" -> addDialogue(beat(dets.replaceWhiteSpaces().i))
-                else -> addDialogue(say(instr.replaceWhiteSpaces(), between(dets)))
+                else -> addDialogue(say(instr.trim(), between(dets)))
             }
         }
     }

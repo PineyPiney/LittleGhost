@@ -35,7 +35,7 @@ abstract class DialogueBubble: InteractableGameObject2D(shader) {
     override fun setUniforms() {
         super.setUniforms()
         uniforms.setVec4Uniform("colour"){ Vec4(1, 1, 1, opaqueness) }
-        uniforms.setFloatUniform("radius"){ 0.05f }
+        uniforms.setFloatUniform("radius"){ 0.2f }
     }
 
     override fun render(view: Mat4, projection: Mat4, tickDelta: Double) {

@@ -2,19 +2,14 @@ package com.pineypiney.little_ghost.screens
 
 import com.pineypiney.game_engine.Window
 import com.pineypiney.game_engine.objects.Interactable
-import com.pineypiney.game_engine.resources.textures.Texture
 import com.pineypiney.little_ghost.LittleEngine
 import com.pineypiney.little_ghost.LittleLogic
-import com.pineypiney.little_ghost.objects.menu_items.MenuBackground
 import com.pineypiney.little_ghost.renderers.MenuRenderer
 import glm_.f
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11C
 
-open class MenuScreen(val background: MenuBackground?, gameEngine: LittleEngine) : LittleLogic(gameEngine) {
-
-    constructor(background: Texture, gameEngine: LittleEngine): this(MenuBackground(background), gameEngine)
-    constructor(backgroundName: String, gameEngine: LittleEngine): this(MenuBackground("backgrounds/$backgroundName"), gameEngine)
+open class MenuScreen(gameEngine: LittleEngine) : LittleLogic(gameEngine) {
 
     final override val renderer: MenuRenderer = MenuRenderer()
 
@@ -25,12 +20,9 @@ open class MenuScreen(val background: MenuBackground?, gameEngine: LittleEngine)
         updateAspectRatio(window)
     }
 
-    override fun addObjects() {
-        if(background != null) add(background)
-    }
-
     override fun open() {
         super.open()
+        setColour(0xD4A290)
 
         val ray = camera.getRay()
         for(item in gameObjects.guiItems.filterIsInstance<Interactable>()){
@@ -43,6 +35,7 @@ open class MenuScreen(val background: MenuBackground?, gameEngine: LittleEngine)
     }
 
     override fun render(window: Window, tickDelta: Double) {
+
         renderer.render(window, this, tickDelta)
     }
 
@@ -56,7 +49,8 @@ open class MenuScreen(val background: MenuBackground?, gameEngine: LittleEngine)
 
     override fun cleanUp() {
         super.cleanUp()
+    }
 
-        background?.delete()
+    override fun addObjects() {
     }
 }
